@@ -11,3 +11,7 @@ df_ADF_str = df_ADF.astype(str)
 
 df_Pop = pd.read_excel(file_path_Pop, sheet_name="Table 1")
 df_Pop_str = df_Pop.astype(str)
+
+
+print("ADF DataFrame (as strings):")
+print(df_Pop_str)
