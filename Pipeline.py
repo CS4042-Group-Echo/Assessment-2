@@ -36,4 +36,5 @@ class Pipeline:
 
 
 APipeline = Pipeline()
-APipeline.Format()
+APipeline.Format() #convert input excels to organised csvs
+APipeline.Break() #introduce errors

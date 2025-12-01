@@ -66,7 +66,7 @@ def FormatFile(input_dir, formatted_dir):
             Part6 = SafeFolder(MetaA6 or "")
 
             FolderName = (Part5 + "__" + Part6).strip("_")
-            FolderPath = os.path.join(OwnerFolder, FolderName)   # *** FIXED PATH ***
+            FolderPath = os.path.join(OwnerFolder, FolderName)  
             os.makedirs(FolderPath, exist_ok=True)
 
             Sheet.delete_rows(1, 7)
@@ -77,7 +77,7 @@ def FormatFile(input_dir, formatted_dir):
                     for ColumnNumber in range(1, Sheet.max_column + 1)
                 ):
                     Sheet.delete_rows(RowNumber)
-
+            
             FirstDataRow = None
             for RowNumber in range(1, Sheet.max_row + 1):
                 v = Sheet.cell(row=RowNumber, column=1).value
@@ -87,7 +87,17 @@ def FormatFile(input_dir, formatted_dir):
                     continue
                 FirstDataRow = RowNumber
                 break
-
+            
+            # Remove footer/meta rows (only column A has content)
+            for RowNumber in range(Sheet.max_row, 0, -1):
+                colA = Sheet.cell(row=RowNumber, column=1).value
+                other_cols_empty = all(
+                    Sheet.cell(row=RowNumber, column=c).value in (None, "")
+                    for c in range(2, Sheet.max_column + 1)
+                )
+                if colA not in (None, "") and other_cols_empty:
+                    Sheet.delete_rows(RowNumber)
+                    
             if FirstDataRow is None or FirstDataRow <= 1:
                 continue
 
