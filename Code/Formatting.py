@@ -146,7 +146,8 @@ def FormatFile(input_dir, formatted_dir):
                         writer.writerow(row)
 
                 continue
-
+            
+            # Split sheet into multiple CSV tables based on dividers
             for index, div_row in enumerate(DividerRows):
                 Start = div_row
                 End = DividerRows[index + 1] - 1 if index + 1 < len(DividerRows) else Sheet.max_row
@@ -158,6 +159,9 @@ def FormatFile(input_dir, formatted_dir):
                 ]
                 TableName = divider_cell[0].strip() if divider_cell else f"table_{index+1}"
                 TableNameSafe = TableName.lower().replace(" ", "_")
+
+                # REMOVE divider row so it doesn't appear in CSV
+                Sheet.delete_rows(div_row, 1)
 
                 CsvPath = os.path.join(FolderPath, f"{TableNameSafe}.csv")
                 with open(CsvPath, "w", newline="", encoding="utf-8") as f:

@@ -30,8 +30,11 @@ def CleanFile(broken_dir, clean_dir):
             for row in data:
                 for i in range(len(row)):
 
-                    cell = row[i]
+                    # Skip column A 
+                    if i == 0:
+                        continue
 
+                    cell = row[i]
                     # If blank cell
                     if cell in ("", None):
                         row[i] = "0"
