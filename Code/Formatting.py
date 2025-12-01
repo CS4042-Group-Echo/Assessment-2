@@ -48,7 +48,6 @@ def FormatFile(input_dir, formatted_dir):
 
         Destination = os.path.join(OwnerFolder, NewName)
         shutil.copy(Source, Destination)
-        print(f"[FormatFile] Copied → {Destination}")
 
         Workbook = openpyxl.load_workbook(Destination)
 
@@ -77,7 +76,7 @@ def FormatFile(input_dir, formatted_dir):
                     for ColumnNumber in range(1, Sheet.max_column + 1)
                 ):
                     Sheet.delete_rows(RowNumber)
-            
+
             FirstDataRow = None
             for RowNumber in range(1, Sheet.max_row + 1):
                 v = Sheet.cell(row=RowNumber, column=1).value
@@ -130,7 +129,7 @@ def FormatFile(input_dir, formatted_dir):
                 if IsDividerRow(Sheet, r):
                     DividerRows.append(r)
 
-            # If NO dividers → save the whole sheet as all.csv
+            # If NO dividers save the whole sheet as all.csv
             if not DividerRows:
                 CsvPath = os.path.join(FolderPath, "all.csv")
 
@@ -146,7 +145,6 @@ def FormatFile(input_dir, formatted_dir):
                         row = [Sheet.cell(row=r, column=c).value for c in range(1, MaxColumn + 1)]
                         writer.writerow(row)
 
-                print(f"[FormatFile] CSV (no dividers → all.csv) → {CsvPath}")
                 continue
 
             for index, div_row in enumerate(DividerRows):
@@ -170,7 +168,6 @@ def FormatFile(input_dir, formatted_dir):
                         row = [Sheet.cell(row=r, column=c).value for c in range(1, MaxColumn + 1)]
                         writer.writerow(row)
 
-                print(f"[FormatFile] CSV → {CsvPath}")
         # After CSV extraction, delete the temporary workbook
         os.remove(Destination)
         print(f"[FormatFile] Done: {Destination}\n")

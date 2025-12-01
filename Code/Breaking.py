@@ -61,5 +61,3 @@ def BreakFile(formatted_dir, broken_dir):
                 writer = csv.writer(f)
                 writer.writerow(header)
                 writer.writerows(data)
-
-            print(f"[BreakFile] Corrupted → {csv_path}")
