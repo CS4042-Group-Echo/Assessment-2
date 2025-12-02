@@ -31,20 +31,20 @@ class Pipeline:
         BreakFile(self.formatted_dir, self.broken_dir)
 
     def Clean(self):
-        CleanFile(self.formatted_dir, self.cleaned_dir)
+        CleanFile(self.broken_dir, self.cleaned_dir)
         
     def Analyse(self):
         Analysis(self.cleaned_dir, self.analysed_dir)
 
     def Output(self):
-        BuildOutput(self.cleaned_dir, self.output_dir)
+        BuildOutput(self.analysed_dir, self.output_dir)
         
 
 
 
 APipeline = Pipeline()
 APipeline.Format() #convert input excels to organised csvs
-# APipeline.Break() #introduce errors
+APipeline.Break() #introduce errors
 APipeline.Clean() #Fix errors
 APipeline.Analyse() #
 
