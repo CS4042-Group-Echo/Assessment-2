@@ -4,6 +4,7 @@ import shutil
 import re
 
 def CleanFile(broken_dir, clean_dir):
+    
     os.makedirs(clean_dir, exist_ok=True)
 
     # Copy folder from C to D

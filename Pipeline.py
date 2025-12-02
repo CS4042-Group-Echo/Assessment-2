@@ -21,8 +21,8 @@ class Pipeline:
         self.formatted_dir = os.path.join(FilePipeline, "B_FormattedData")
         self.broken_dir = os.path.join(FilePipeline, "C_BrokenData")
         self.cleaned_dir = os.path.join(FilePipeline, "D_CleanData")
-        self.analysed_dir = os.path.join(FilePipeline, "D_AnalysedData")
-        self.output_dir = os.path.join(FilePipeline, "E_OutputData")
+        self.analysed_dir = os.path.join(FilePipeline, "E_AnalysedData")
+        self.output_dir = os.path.join(FilePipeline, "F_OutputData")
 
     def Format(self):
         FormatFile(self.input_dir, self.formatted_dir)
@@ -31,10 +31,10 @@ class Pipeline:
         BreakFile(self.formatted_dir, self.broken_dir)
 
     def Clean(self):
-        CleanFile(self.broken_dir, self.cleaned_dir)
+        CleanFile(self.formatted_dir, self.cleaned_dir)
         
     def Analyse(self):
-        Analyse(self.cleaned_dir, self.analysed_dir)
+        Analysis(self.cleaned_dir, self.analysed_dir)
 
     def Output(self):
         BuildOutput(self.cleaned_dir, self.output_dir)
@@ -44,7 +44,7 @@ class Pipeline:
 
 APipeline = Pipeline()
 APipeline.Format() #convert input excels to organised csvs
-APipeline.Break() #introduce errors
+# APipeline.Break() #introduce errors
 APipeline.Clean() #Fix errors
 APipeline.Analyse() #
 

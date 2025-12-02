@@ -48,7 +48,4 @@ def Analysis(csv_path, output_path):
     wb = Load(csv_path)
     wb = LineChartGen(wb, "Test", "X", "Y")
     wb.save(os.path.join(output_path, "15-19_years.xlsx"))
-
-csv_path = 'FilePipeline/D_CleanData/ADF/table_1._australian_defence_force_service(a)_by_age_by_sex__count_of_persons_aged_15_years_and_over(b)/15-19_years.csv'
-output_path = 'FilePipeline/E_AnalysedData/ADF/table_1._australian_defence_force_service(a)_by_age_by_sex__count_of_persons_aged_15_years_and_over(b)'
-Analysis(csv_path, output_path)
+    
