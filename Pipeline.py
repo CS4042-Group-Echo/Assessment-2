@@ -1,4 +1,5 @@
-import openpyxl
+import openpyxl # type: ignore
+import csv
 import os
 
 ADFInputFile = "A_InputData\AdfInputData.xlsx"
@@ -8,6 +9,7 @@ from Code.Formatting import FormatFile
 from Code.Breaking import BreakFile
 from Code.Cleaning import CleanFile
 from Code.Output import BuildOutput
+from Code.Analysis import Analysis
 
 
 class Pipeline:
@@ -19,6 +21,7 @@ class Pipeline:
         self.formatted_dir = os.path.join(FilePipeline, "B_FormattedData")
         self.broken_dir = os.path.join(FilePipeline, "C_BrokenData")
         self.cleaned_dir = os.path.join(FilePipeline, "D_CleanData")
+        self.analysed_dir = os.path.join(FilePipeline, "D_AnalysedData")
         self.output_dir = os.path.join(FilePipeline, "E_OutputData")
 
     def Format(self):
@@ -29,13 +32,19 @@ class Pipeline:
 
     def Clean(self):
         CleanFile(self.broken_dir, self.cleaned_dir)
+        
+    def Analyse(self):
+        Analyse(self.cleaned_dir, self.analysed_dir)
 
     def Output(self):
         BuildOutput(self.cleaned_dir, self.output_dir)
+        
 
 
 
 APipeline = Pipeline()
 APipeline.Format() #convert input excels to organised csvs
 APipeline.Break() #introduce errors
-APipeline.Clean() #Fix errors 
+APipeline.Clean() #Fix errors
+APipeline.Analyse() #
+
