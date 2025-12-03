@@ -45,8 +45,6 @@ def BarChartGen(wb, title, x_axis, y_axis):
     for i in range(0, 3):
         start_row = starts[i]
         end_row = starts[i+1] - 1 if i + 1 < len(starts) else ws.max_row
-        print("Start Row " + str(start_row))
-        print("End Row " + str(end_row))
         c1 = BarChart()
         c1.title = (title  + graph_type[i])
         c1.style = 2
@@ -87,7 +85,6 @@ def Analysis(input_dir, output_dir):
         rel = os.path.relpath(dirpath, input_dir)
         target_dir = os.path.join(output_dir, rel) if rel != "." else output_dir
         os.makedirs(target_dir, exist_ok=True)
-
         for name in filenames:
             if not name.lower().endswith(".csv"):
                 continue

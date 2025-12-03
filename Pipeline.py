@@ -40,7 +40,7 @@ class Pipeline:
 APipeline = Pipeline()
 APipeline.Format() #convert input excels to organised csvs
 APipeline.Clean() #Fix errors
-APipeline.PrepFile()
-APipeline.Analyse() #
-APipeline.Output()
+APipeline.PrepFile() #Prep clean files for data analysis
+APipeline.Analyse() #Analyse prepped files and create excels with charts
+APipeline.Output() #Build final output file
 
