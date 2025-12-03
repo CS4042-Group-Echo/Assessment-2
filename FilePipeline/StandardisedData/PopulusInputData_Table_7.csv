@@ -1,0 +1,43 @@
+Sex,Category,Has need for assistance with core activities,assistance with core activities activities,Not stated,Total
+Males,Arthritis,154778.0,626940.0,8337.0,
+Males,Asthma,,822180.0,6964.0,909407.0
+Males,Cancer (including remission),71390.0,275073.0,3472.0,349930.0
+Males,Dementia (including Alzheimer’s),61589.0,13947.0,2621.0,78154.0
+Males,Diabetes (excluding gestational diabetes),119931.0,527096.0,6574.0,653595.0
+Males,Heart disease (including heart attack or angina),130359.0,468132.0,,605094.0
+Males,Kidney disease,38783.0,79023.0,1470.0,119271.0
+Males,Lung condition (including COPD or emphysema)(e),65843.0,144883.0,2575.0,213301.0
+Males,Mental health condition (including depression or anxiety),196421.0,668330.0,7778.0,872532.0
+Males,Stroke,54758.0,,1819.0,127292.0
+Males,Any other long-term health condition(s)(f),260338.0,625150.0,7147.0,892634.0
+Males,No long-term health condition(s),77932.0,7621001.0,59014.0,7757945.0
+Males,Not stated,16670.0,366541.0,699368.0,1082583.0
+Males,Total males(d),683931.0,11069482.0,791736.0,12545154.0
+Females,Arthritis,310050.0,1035446.0,14841.0,1360338.0
+Females,Asthma,125606.0,1023673.0,9331.0,1158613.0
+Females,Cancer (including remission),78681.0,,3853.0,382225.0
+Females,Dementia (including Alzheimer’s),93298.0,13354.0,4352.0,
+Females,Diabetes (excluding gestational diabetes),131448.0,407599.0,6071.0,545121.0
+Females,Heart disease (including heart attack or angina),,257453.0,5573.0,394002.0
+Females,Kidney disease,42592.0,68193.0,1715.0,112506.0
+Females,Lung condition (including COPD or emphysema)(e),74896.0,150030.0,2887.0,227809.0
+Females,Mental health condition (including depression or anxiety),233132.0,1114471.0,,1359011.0
+Females,Stroke,53663.0,51927.0,1731.0,107317.0
+Females,Any other long-term health condition(s)(f),296354.0,842908.0,10030.0,1149291.0
+Females,No long-term health condition(s),63935.0,7414700.0,56132.0,7534773.0
+Females,Not stated,15490.0,362601.0,605578.0,983670.0
+Females,Total females(d),780487.0,11395218.0,701938.0,12877635.0
+Persons,Arthritis,464828.0,1662391.0,23178.0,2150396.0
+Persons,Asthma,205863.0,1845856.0,16298.0,2068020.0
+Persons,Cancer (including remission),150070.0,574761.0,7332.0,732152.0
+Persons,Dementia (including Alzheimer’s),154884.0,27305.0,6974.0,189162.0
+Persons,Diabetes (excluding gestational diabetes),251378.0,934692.0,12645.0,1198721.0
+Persons,Heart disease (including heart attack or angina),261334.0,725587.0,12174.0,999096.0
+Persons,Kidney disease,81380.0,147213.0,3187.0,231777.0
+Persons,Lung condition (including COPD or emphysema)(e),140736.0,294917.0,5457.0,441109.0
+Persons,Mental health condition (including depression or anxiety),429554.0,1782801.0,19192.0,2231543.0
+Persons,Stroke,108419.0,122639.0,3548.0,234609.0
+Persons,Any other long-term health condition(s)(f),556693.0,1468060.0,17178.0,2041929.0
+Persons,No long-term health condition(s),141871.0,15035701.0,115145.0,15292718.0
+Persons,Not stated,32155.0,729148.0,1304942.0,2066251.0
+Persons,Total persons(d),1464415.0,22464703.0,,25422788.0
