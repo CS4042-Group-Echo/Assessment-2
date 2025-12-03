@@ -43,7 +43,9 @@ def BarChartGen(wb, title, x_axis, y_axis):
         if row[0].row > 2 and ws.cell(row=row[0].row, column=1).value != ws.cell(row=row[0].row - 1, column=1).value:
             starts.append(row[0].row)
     for i in range(0, 3):
-        start_row = starts[i]
+        start_row = starts[i] if i < len(starts) else None
+        if start_row is None:
+            return wb
         end_row = starts[i+1] - 1 if i + 1 < len(starts) else ws.max_row
         c1 = BarChart()
         c1.title = (title  + graph_type[i])
