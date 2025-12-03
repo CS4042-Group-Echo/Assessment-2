@@ -205,3 +205,12 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# Local test Directories
+Assessment-2/FilePipeline/B_FormattedData/
+Assessment-2/FilePipeline/C_CleanData/
+Assessment-2/FilePipeline/D_PreppedData/
+Assessment-2/FilePipeline/E_AnalysedData/
+Assessment-2/FilePipeline/F_OutputData/
+
