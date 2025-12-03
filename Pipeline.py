@@ -6,7 +6,6 @@ ADFInputFile = "A_InputData\AdfInputData.xlsx"
 PopulisInputFile_ = "A_InputData\PopulusInputData.xlsx"
 
 from Code.Formatting import FormatFile
-from Code.Breaking import BreakFile
 from Code.Cleaning import CleanFile
 from Code.Output import BuildOutput
 from Code.Analysis import Analysis
@@ -19,16 +18,13 @@ class Pipeline:
 
         self.input_dir = os.path.join(FilePipeline, "A_InputData")
         self.formatted_dir = os.path.join(FilePipeline, "B_FormattedData")
-        self.broken_dir = os.path.join(FilePipeline, "C_BrokenData")
-        self.cleaned_dir = os.path.join(FilePipeline, "D_CleanData")
+        self.cleaned_dir = os.path.join(FilePipeline, "C_CleanData")
+        self.prepped_dir = os.path.join(FilePipeline, "D_PreppedData")
         self.analysed_dir = os.path.join(FilePipeline, "E_AnalysedData")
         self.output_dir = os.path.join(FilePipeline, "F_OutputData")
 
     def Format(self):
         FormatFile(self.input_dir, self.formatted_dir)
-
-    def Break(self):
-        BreakFile(self.formatted_dir, self.broken_dir)
 
     def Clean(self):
         CleanFile(self.broken_dir, self.cleaned_dir)
@@ -44,7 +40,6 @@ class Pipeline:
 
 APipeline = Pipeline()
 APipeline.Format() #convert input excels to organised csvs
-APipeline.Break() #introduce errors
 APipeline.Clean() #Fix errors
 APipeline.Analyse() #
 
