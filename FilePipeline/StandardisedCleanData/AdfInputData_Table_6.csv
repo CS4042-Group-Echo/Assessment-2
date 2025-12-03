@@ -1,23 +1,23 @@
 Sex,Category,Currently serving in the regular service,Currently serving in the reserves service,Previously served (and not currently serving),Has never served in the Australian Defence Force,Not stated,Total
-Persons,"Agriculture, Forestry and Fishing",56.0,207.0,6061.0,274896.0,1007.0,282227.0
-Persons,Mining,101.0,465.0,8242.0,205332.0,631.0,214759.0
-Persons,Manufacturing,212.0,928.0,13795.0,698523.0,1291.0,714759.0
-Persons,"Electricity, Gas, Water and Waste Services",26.0,215.0,3992.0,129889.0,252.0,134368.0
-Persons,Construction,257.0,1105.0,17709.0,1046069.0,2501.0,1067645.0
-Persons,Wholesale Trade,48.0,266.0,5802.0,305306.0,436.0,311863.0
-Persons,Retail Trade,160.0,567.0,9849.0,1086811.0,2223.0,1099617.0
-Persons,Accommodation and Food Services,190.0,317.0,4475.0,776890.0,1854.0,783737.0
-Persons,"Transport, Postal and Warehousing",244.0,896.0,16703.0,527230.0,1285.0,546364.0
-Persons,Information Media and Telecommunications,39.0,214.0,2657.0,163737.0,223.0,166872.0
-Persons,Financial and Insurance Services,50.0,384.0,5182.0,438884.0,622.0,445121.0
-Persons,"Rental, Hiring and Real Estate Services",21.0,124.0,3163.0,184017.0,296.0,187621.0
-Persons,"Professional, Scientific and Technical Services",307.0,2314.0,17202.0,924074.0,1184.0,945094.0
-Persons,Administrative and Support Services,141.0,253.0,5609.0,381517.0,909.0,388432.0
-Persons,Public Administration and Safety,54803.0,9224.0,34084.0,697683.0,1239.0,797031.0
-Persons,Education and Training,280.0,1075.0,13250.0,1045214.0,1507.0,1061320.0
-Persons,Health Care and Social Assistance,471.0,2155.0,21411.0,1724464.0,3224.0,1751717.0
-Persons,Arts and Recreation Services,25.0,217.0,2373.0,185558.0,309.0,188479.0
-Persons,Other Services,147.0,416.0,6285.0,427731.0,869.0,435459.0
-Persons,Inadequately described,341.0,382.0,6027.0,359145.0,4046.0,369939.0
-Persons,Not stated,587.0,174.0,1917.0,135559.0,18761.0,156996.0
-Persons,Total,58512.0,21908.0,205787.0,11718545.0,44669.0,12049410.0
+Persons,"Agriculture, Forestry and Fishing",56,207,6061,274896,1007,282227
+Persons,Mining,101,465,8242,205332,631,214759
+Persons,Manufacturing,212,928,13795,698523,1291,714759
+Persons,"Electricity, Gas, Water and Waste Services",26,215,3992,129889,252,134368
+Persons,Construction,257,1105,17709,1046069,2501,1067645
+Persons,Wholesale Trade,48,266,5802,305306,436,311863
+Persons,Retail Trade,160,567,9849,1086811,2223,1099617
+Persons,Accommodation and Food Services,190,317,4475,776890,1854,783737
+Persons,"Transport, Postal and Warehousing",244,896,16703,527230,1285,546364
+Persons,Information Media and Telecommunications,39,214,2657,163737,223,166872
+Persons,Financial and Insurance Services,50,384,5182,438884,622,445121
+Persons,"Rental, Hiring and Real Estate Services",21,124,3163,184017,296,187621
+Persons,"Professional, Scientific and Technical Services",307,2314,17202,924074,1184,945094
+Persons,Administrative and Support Services,141,253,5609,381517,909,388432
+Persons,Public Administration and Safety,54803,9224,34084,697683,1239,797031
+Persons,Education and Training,280,1075,13250,1045214,1507,1061320
+Persons,Health Care and Social Assistance,471,2155,21411,1724464,3224,1751717
+Persons,Arts and Recreation Services,25,217,2373,185558,309,188479
+Persons,Other Services,147,416,6285,427731,869,435459
+Persons,Inadequately described,341,382,6027,359145,4046,369939
+Persons,Not stated,587,174,1917,135559,18761,156996
+Persons,Total,58512,21908,205787,11718545,44669,12049410
