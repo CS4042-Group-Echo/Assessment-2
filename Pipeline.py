@@ -27,10 +27,10 @@ class Pipeline:
         FormatFile(self.input_dir, self.formatted_dir)
 
     def Clean(self):
-        CleanFile(self.broken_dir, self.cleaned_dir)
+        CleanFile(self.formatted_dir, self.cleaned_dir)
         
     def Analyse(self):
-        Analysis(self.prepped_dir, self.analysed_dir)
+        Analysis(self.cleaned_dir, self.analysed_dir)
 
     def Output(self):
         BuildOutput(self.analysed_dir, self.output_dir)
