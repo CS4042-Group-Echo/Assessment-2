@@ -4,7 +4,7 @@ import os
 import shutil
 
 from openpyxl.chart import (
-    LineChart,
+    BarChart,
     Reference,
 )
 
@@ -27,9 +27,9 @@ def Load(csv_path):
                 pass
     return wb
 
-def LineChartGen(wb, title, x_axis, y_axis):
+def BarChartGen(wb, title, x_axis, y_axis):
     ws = wb.active
-    c1 = LineChart()
+    c1 = BarChart()
     c1.title = title
     c1.style = 2
     c1.y_axis.title = y_axis
@@ -63,11 +63,14 @@ def Analysis(input_dir, output_dir):
 
             # make excel file
             wb = Load(dst_csv)
-            wb = LineChartGen(wb, title=name, x_axis="X", y_axis="Y")
+            wb = BarChartGen(wb, title=name, x_axis="Category", y_axis="Count")
 
-            xlsx_path = os.path.splitext(dst_csv)[0] + ".xlsx"
+            xlsx_path = os.path.join(output_dir, os.path.splitext(dst_csv)[0] + ".xlsx")
             wb.save(xlsx_path)
 
             # delete analysed csv
             os.remove(dst_csv)
-    
+    return
+
+dir1 = 'C:\Assessment-2\FilePipeline\StandardisedCleanData\AdfInputData_Table_2.csv'
+Analysis(dir1, 'C:\Assessment-2\FilePipeline\E_AnalysedData')
