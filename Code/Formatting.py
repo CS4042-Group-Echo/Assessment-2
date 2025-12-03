@@ -213,8 +213,3 @@ def FormatFile(input_dir, output_dir):
     standardizer = AnalysisReadyStandardizer(input_dir, output_dir)
     standardizer.run()
     print("--- Formatting Complete ---")
-
-if __name__ == "__main__":
-    INPUT = "FilePipeline/A_InputData"
-    OUTPUT = "FilePipeline/B_FormattedData"
-    FormatFile(INPUT, OUTPUT)

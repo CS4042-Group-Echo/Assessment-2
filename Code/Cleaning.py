@@ -193,7 +193,6 @@ def fix_wrong_totals(df, filename):
 # --- EXECUTION ---
 
 def CleanFile(input_dir, output_dir):
-    if os.path.exists(output_dir): shutil.rmtree(output_dir)
     os.makedirs(output_dir, exist_ok=True)
     
     print("--- Starting Repair Pipeline ---\n")
@@ -234,7 +233,3 @@ def CleanFile(input_dir, output_dir):
                 
     print("\n--- Complete ---")
 
-if __name__ == "__main__":
-    INPUT = "FilePipeline/B_FormattedData"
-    OUTPUT = "FilePipeline/C_CleanData"
-    CleanFile(INPUT, OUTPUT)

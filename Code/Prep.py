@@ -2,44 +2,69 @@ import os
 import pandas as pd
 import shutil
 
-def MergePopulusIntoAdf():
-    # base path and data folder
-    base_dir = os.path.dirname(__file__)
-    data_dir = os.path.join(base_dir, "..", "filepipeline", "StandardisedCleanData")
-    adf_path = os.path.join(data_dir, "AdfInputData_Table_1.csv")
-    pop_path = os.path.join(data_dir, "PopulusInputData_Table_1.csv")
+def PrepFile(input_dir, output_dir):
 
-    # clone the adf csv before editing
-    prepped_path = os.path.join(data_dir, "AdfInputData_Table_1_Prepped.csv")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # table 1 paths (originals in cleaned dir)
+    adf_path = os.path.join(input_dir, "AdfInputData_Table_1.csv")
+    pop_path = os.path.join(input_dir, "PopulusInputData_Table_1.csv")
+
+    # make prepped table 1 in output dir
+    prepped_path = os.path.join(output_dir, "AdfInputData_Table_1_Prepped.csv")
     shutil.copy(adf_path, prepped_path)
+
     adf = pd.read_csv(prepped_path)
     populus = pd.read_csv(pop_path)
 
-    #get totals row from Populus
+    # totals row from Populus
     populus_totals_row = populus.iloc[41]
     populus_values = populus_totals_row.iloc[5:20]
 
-    # remove last 4 columns from ADF
+    # remove last 4 cols from ADF
     if adf.shape[1] >= 4:
         adf = adf.iloc[:, :-4]
     else:
         raise ValueError("ADF table has fewer than 4 columns.")
 
-    #add new column for population totals
+    # new column
     new_col_name = "PopulationHealthTotal"
     adf[new_col_name] = pd.NA
 
-    #put the values in the Persons section
+    # fill Persons block
     start_idx = 32
     for i, value in enumerate(populus_values):
         row_idx = start_idx + i
         if row_idx < len(adf):
             adf.loc[row_idx, new_col_name] = value
 
+    # drop separator rows
     adf = adf.drop([15, 31, 47], errors="ignore")
 
-    #save updated prepped file
     adf.to_csv(prepped_path, index=False)
 
+    # copy all other csvs from input to output
+    for filename in os.listdir(input_dir):
+        if not filename.lower().endswith(".csv"):
+            continue
+        if filename == "AdfInputData_Table_1.csv":
+            continue  # handled above
+        src = os.path.join(input_dir, filename)
+        dst = os.path.join(output_dir, filename)
+        shutil.copy(src, dst)
 
-MergePopulusIntoAdf()
+    # drop last 3 cols from all other ADF tables in output dir
+    for filename in os.listdir(output_dir):
+        if not filename.lower().endswith(".csv"):
+            continue
+        if not filename.startswith("Adf"):
+            continue
+        if filename == "AdfInputData_Table_1_Prepped.csv":
+            continue  # keep full prepped table 1
+
+        path = os.path.join(output_dir, filename)
+        df = pd.read_csv(path)
+        if df.shape[1] > 3:
+            df = df.iloc[:, :-3]
+        df.to_csv(path, index=False)
