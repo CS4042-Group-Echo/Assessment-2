@@ -1,14 +1,10 @@
-import openpyxl # type: ignore
-import csv
 import os
-
-ADFInputFile = "A_InputData\AdfInputData.xlsx"
-PopulisInputFile_ = "A_InputData\PopulusInputData.xlsx"
 
 from Code.Formatting import FormatFile
 from Code.Cleaning import CleanFile
-from Code.Output import BuildOutput
+from Code.Prep import PrepFile
 from Code.Analysis import Analysis
+from Code.Output import BuildOutput
 
 
 class Pipeline:
@@ -28,9 +24,12 @@ class Pipeline:
 
     def Clean(self):
         CleanFile(self.formatted_dir, self.cleaned_dir)
-        
+
+    def PrepFile(self):
+        PrepFile(self.cleaned_dir, self.prepped_dir)
+
     def Analyse(self):
-        Analysis(self.cleaned_dir, self.analysed_dir)
+        Analysis(self.prepped_dir, self.analysed_dir)
 
     def Output(self):
         BuildOutput(self.analysed_dir, self.output_dir)
@@ -41,5 +40,7 @@ class Pipeline:
 APipeline = Pipeline()
 APipeline.Format() #convert input excels to organised csvs
 APipeline.Clean() #Fix errors
+APipeline.PrepFile()
 APipeline.Analyse() #
+APipeline.Output()
 
