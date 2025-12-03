@@ -30,7 +30,7 @@ class Pipeline:
         CleanFile(self.broken_dir, self.cleaned_dir)
         
     def Analyse(self):
-        Analysis(self.cleaned_dir, self.analysed_dir)
+        Analysis(self.prepped_dir, self.analysed_dir)
 
     def Output(self):
         BuildOutput(self.analysed_dir, self.output_dir)
