@@ -6,6 +6,13 @@ __pycache__/
 # C extensions
 *.so
 
+# Ignore everything in FilePipeline
+FilePipeline/*
+
+# But DO NOT ignore A_InputData folder
+!FilePipeline/A_InputData/
+!FilePipeline/A_InputData/**
+
 # Distribution / packaging
 .Python
 build/
