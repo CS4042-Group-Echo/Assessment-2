@@ -208,9 +208,9 @@ __marimo__/
 
 
 # Local test Directories
-Assessment-2/FilePipeline/B_FormattedData/
-Assessment-2/FilePipeline/C_CleanData/
-Assessment-2/FilePipeline/D_PreppedData/
-Assessment-2/FilePipeline/E_AnalysedData/
-Assessment-2/FilePipeline/F_OutputData/
+FilePipeline/B_FormattedData/
+FilePipeline/C_CleanData/
+FilePipeline/D_PreppedData/
+FilePipeline/E_AnalysedData/
+FilePipeline/F_OutputData/
 
