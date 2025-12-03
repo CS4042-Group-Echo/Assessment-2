@@ -89,6 +89,7 @@ class AnalysisReadyStandardizer:
     def clean_column_names(self, df):
         new_cols = []
         total_cols = len(df.columns)
+        print("    [Debug] Clean Column Names")
         for i, col in enumerate(df.columns):
             col_str = str(col)
             # Force last col to be 'Total' (Standardizes Total(c) -> Total)
@@ -97,6 +98,8 @@ class AnalysisReadyStandardizer:
                 continue
             # Remove (a), (b) footnotes
             col_clean = re.sub(r'\([a-z]\)', '', col_str).strip()
+            
+            print("     -> " + col_clean)
             new_cols.append(col_clean)
         df.columns = new_cols
         return df
