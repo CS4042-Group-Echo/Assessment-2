@@ -1,177 +1,209 @@
+import pandas as pd
 import os
-import shutil
-import openpyxl
-import csv
+import re
+import numpy as np
 
+class AnalysisReadyStandardizer:
+    def __init__(self, input_files):
+        self.input_files = input_files
 
-def IsDividerRow(Sheet, RowNumber):  
-    MaxColumn = Sheet.max_column
-    Values = []
-    for ColumnNumber in range(1, MaxColumn + 1):
-        Value = Sheet.cell(row=RowNumber, column=ColumnNumber).value
-        if Value not in (None, ""):
-            Values.append(str(Value).strip())
-    if len(Values) != 1:
-        return False
-    Text = Values[0]
-    return Text.isupper() and any(ch.isalpha() for ch in Text)
+    def find_header_row_index(self, df):
+        """Finds the row index containing 'Total' (The bottom of the header block)."""
+        print("    [Debug] Scanning for 'Total' row...")
+        for i, row in df.iterrows():
+            # Convert row to string list for easier searching
+            row_str = [str(x).lower().strip() for x in row if pd.notna(x)]
+            
+            # Check for 'total'
+            if any('total' in x for x in row_str) and len(row_str) > 2:
+                print(f"    [Debug] Found 'Total' at row index: {i}")
+                return i
+        
+        print("    [Error] 'Total' row NOT found in this sheet.")
+        return None
 
+    def collect_header_block(self, df, main_idx):
+        header_indices = [main_idx]
+        
+        for r in range(main_idx - 1, -1, -1):
+            row_vals = df.iloc[r].values
+            non_empty = [x for x in row_vals if pd.notna(x) and str(x).strip() != '']
+            if not non_empty: break 
+            if len(non_empty) == 1: break 
+            header_indices.insert(0, r) 
 
-def SafeFolder(text):  
-    if text is None:
-        return "unknown"
-    text = str(text).strip().lower()
-    for ch in '<>:"/\\|?*':
-        text = text.replace(ch, "_")
-    text = "_".join(text.split())
-    return text
+        header_block = df.iloc[header_indices].astype(str).values
+        
+        final_header = []
+        num_cols = header_block.shape[1]
+        
+        for c in range(num_cols):
+            col_vals = header_block[:, c]
+            clean_parts = []
+            for val in col_vals:
+                s_val = val.strip()
+                if s_val.lower() == 'nan': continue
+                if clean_parts and clean_parts[-1].lower() == s_val.lower(): continue
+                clean_parts.append(s_val)
+            
+            merged = " ".join(clean_parts).strip()
+            if not merged: merged = f"Unnamed: {c}"
+            final_header.append(merged)
+            
+        return final_header
 
-
-def FormatFile(input_dir, formatted_dir):
-    os.makedirs(formatted_dir, exist_ok=True)
-
-    for filename in os.listdir(input_dir):
-        if not filename.endswith(".xlsx"):
-            continue
-
-        Source = os.path.join(input_dir, filename)
-        NewName = "A_" + filename
-
-        # ADF / Populis layer
-        if filename.lower().startswith("adf"):
-            OwnerGroup = "ADF"
-        else:
-            OwnerGroup = "Populis"
-
-        OwnerFolder = os.path.join(formatted_dir, OwnerGroup)
-        os.makedirs(OwnerFolder, exist_ok=True)
-
-        Destination = os.path.join(OwnerFolder, NewName)
-        shutil.copy(Source, Destination)
-
-        Workbook = openpyxl.load_workbook(Destination)
-
-        for Index, SheetName in enumerate(Workbook.sheetnames):
-            if Index == 0:
+    def clean_column_names(self, df):
+        new_cols = []
+        total_cols = len(df.columns)
+        
+        for i, col in enumerate(df.columns):
+            col_str = str(col)
+            if i == total_cols - 1:
+                new_cols.append("Total")
                 continue
 
-            Sheet = Workbook[SheetName]
-
-            # A6 becomes container folder for all split tables
-            MetaA5 = Sheet["A5"].value
-            MetaA6 = Sheet["A6"].value
-
-            Part5 = SafeFolder(MetaA5 or "")
-            Part6 = SafeFolder(MetaA6 or "")
-
-            FolderName = (Part5 + "__" + Part6).strip("_")
-            FolderPath = os.path.join(OwnerFolder, FolderName)  
-            os.makedirs(FolderPath, exist_ok=True)
-
-            Sheet.delete_rows(1, 7)
-
-            for RowNumber in range(Sheet.max_row, 0, -1):
-                if all(
-                    Sheet.cell(row=RowNumber, column=ColumnNumber).value in (None, "")
-                    for ColumnNumber in range(1, Sheet.max_column + 1)
-                ):
-                    Sheet.delete_rows(RowNumber)
-
-            FirstDataRow = None
-            for RowNumber in range(1, Sheet.max_row + 1):
-                v = Sheet.cell(row=RowNumber, column=1).value
-                if v in (None, ""):
-                    continue
-                if IsDividerRow(Sheet, RowNumber):
-                    continue
-                FirstDataRow = RowNumber
-                break
+            col_clean = re.sub(r'\([a-z]\)', '', col_str)
+            col_clean = col_clean.strip()
+            new_cols.append(col_clean)
             
-            # Remove footer/meta rows (only column A has content)
-            for RowNumber in range(Sheet.max_row, 0, -1):
-                colA = Sheet.cell(row=RowNumber, column=1).value
-                other_cols_empty = all(
-                    Sheet.cell(row=RowNumber, column=c).value in (None, "")
-                    for c in range(2, Sheet.max_column + 1)
-                )
-                if colA not in (None, "") and other_cols_empty:
-                    Sheet.delete_rows(RowNumber)
+        df.columns = new_cols
+        return df
+
+    def detect_sex(self, row_vals):
+        check_vals = [str(x).upper().strip() for x in row_vals[0:3] if pd.notna(x)]
+        if 'MALES' in check_vals: return 'Males'
+        if 'FEMALES' in check_vals: return 'Females'
+        if 'PERSONS' in check_vals: return 'Persons'
+        return None
+
+    def clean_sheet(self, file_path, sheet_name):
+        print(f"  Processing Sheet: {sheet_name}")
+        try:
+            df_raw = pd.read_excel(file_path, sheet_name=sheet_name, header=None)
+        except Exception as e:
+            print(f"  [Error Reading] {sheet_name}: {e}")
+            return None
+        
+        main_idx = self.find_header_row_index(df_raw)
+        if main_idx is None: 
+            print("  [Skip] Could not determine header structure (missing 'Total').")
+            return None
+
+        final_header = self.collect_header_block(df_raw, main_idx)
+        df = pd.read_excel(file_path, sheet_name=sheet_name, header=None, skiprows=main_idx + 1)
+        
+        rows_to_keep = []
+        current_sex = "Persons"
+        data_arrays = df.values
+        
+        print(f"    [Debug] Raw data rows to scan: {len(data_arrays)}")
+
+        for row_vals in data_arrays:
+            # 1. Detect Sex
+            detected = self.detect_sex(row_vals)
+            if detected:
+                current_sex = detected
+                continue 
+            
+            # 2. Category Label
+            cat_val = str(row_vals[0]).strip()
+            if cat_val == 'nan' or cat_val == '':
+                if len(row_vals) > 1:
+                    cat_val = str(row_vals[1]).strip()
+
+            # 3. Garbage Filter
+            bad_starts = ('(', '©', 'This table', 'Small random', 'Please note', 'Released at', 'Inquiries')
+            if (cat_val.startswith(bad_starts) or cat_val.lower() == 'nan' or cat_val == ''):
+                continue
+            
+            # 4. Data Filter
+            row_data_part = row_vals[1:]
+            has_data = False
+            for v in row_data_part:
+                s_val = str(v).strip()
+                if s_val and s_val.lower() != 'nan':
+                    has_data = True
+                    break
+            if not has_data: continue 
+
+            # 5. Construct Row
+            data_part = list(row_vals[1:])
+            target_len = len(final_header) - 1 
+            data_part = data_part[:target_len] 
+
+            clean_row = [current_sex, cat_val] + data_part
+            rows_to_keep.append(clean_row)
+
+        if not rows_to_keep: 
+            print("  [Skip] No valid data rows found after filtering.")
+            return None
+
+        print(f"    [Success] Extracted {len(rows_to_keep)} clean rows.")
+
+        final_columns = ['Sex', 'Category'] + final_header[1:]
+        max_len = max(len(r) for r in rows_to_keep)
+        if len(final_columns) > max_len:
+            final_columns = final_columns[:max_len]
+        
+        clean_df = pd.DataFrame(rows_to_keep, columns=final_columns)
+
+        # 6. Final Polish
+        clean_df = clean_df.replace(r'^\s*\.\.\s*$', 0, regex=True)
+        clean_df = clean_df.dropna(axis=1, how='all')
+        clean_df = self.clean_column_names(clean_df)
+        
+        return clean_df
+
+    def run(self):
+        # Calculate output path relative to the script, just like we did for inputs
+        script_pos = os.path.dirname(os.path.abspath(__file__))
+        # Go up one level, then into FilePipeline/StandardisedData
+        out_dir = os.path.join(os.path.dirname(script_pos), 'FilePipeline', 'StandardisedData')
+
+        if not os.path.exists(out_dir): 
+            os.makedirs(out_dir)
+            print(f"[Info] Created directory: {out_dir}")
+
+        for file_path in self.input_files:
+            if not os.path.exists(file_path): 
+                print(f"[Error] File not found: {file_path}")
+                continue
+            
+            print(f"Standardizing {file_path}...")
+            xls = pd.ExcelFile(file_path)
+            for sheet in xls.sheet_names:
+                if 'content' in sheet.lower(): continue
+                df = self.clean_sheet(file_path, sheet)
+                if df is not None:
+                    # Use the safe 'out_dir' variable here
+                    base_name = os.path.basename(file_path).replace('.xlsx','')
+                    safe_name = f"{base_name}_{sheet.replace(' ','_')}.csv"
+                    full_out_path = os.path.join(out_dir, safe_name)
                     
-            if FirstDataRow is None or FirstDataRow <= 1:
-                continue
+                    df.to_csv(full_out_path, index=False)
+                    print(f"  -> Created {full_out_path}")
+# --- EXECUTION ---
 
-            HeaderRows = list(range(1, FirstDataRow))
-            NonDividerHeaderRows = [r for r in HeaderRows if not IsDividerRow(Sheet, r)]
-            MaxColumn = Sheet.max_column
+# 1. Get the folder where THIS script (dataPipeline.py) lives
+script_dir = os.path.dirname(os.path.abspath(__file__))
 
-            Combined = {}
-            for c in range(1, MaxColumn + 1):
-                parts = []
-                for r in NonDividerHeaderRows:
-                    v = Sheet.cell(row=r, column=c).value
-                    if v not in (None, ""):
-                        parts.append(str(v).strip())
-                Combined[c] = " ".join(parts) if parts else None
+# 2. Go up one level to the project root (The parent of 'code/')
+project_root = os.path.dirname(script_dir)
 
-            Sheet.insert_rows(1)
+# 3. Construct the absolute paths dynamically
+input_dir = os.path.join(project_root, 'FilePipeline', 'A_InputData')
+output_dir = os.path.join(project_root, 'FilePipeline', 'StandardisedData')
 
-            for c in range(1, MaxColumn + 1):
-                if Combined[c] not in (None, ""):
-                    Sheet.cell(row=1, column=c, value=Combined[c])
+# Define files using the safe paths
+file_1 = os.path.join(input_dir, 'AdfInputData.xlsx')
+file_2 = os.path.join(input_dir, 'PopulusInputData.xlsx')
 
-            ToDelete = [r + 1 for r in NonDividerHeaderRows]
-            for r in sorted(ToDelete, reverse=True):
-                Sheet.delete_rows(r, 1)
+files = [file_1, file_2]
 
-            # Identify divider rows (start of each table)
-            DividerRows = []
-            for r in range(2, Sheet.max_row + 1):
-                if IsDividerRow(Sheet, r):
-                    DividerRows.append(r)
+# Update the class to use the safe output directory
+# (You need to slightly modify your run method to accept this, or just rely on the inputs)
+pipeline = AnalysisReadyStandardizer(files)
 
-            # If NO dividers save the whole sheet as all.csv
-            if not DividerRows:
-                CsvPath = os.path.join(FolderPath, "all.csv")
-
-                with open(CsvPath, "w", newline="", encoding="utf-8") as f:
-                    writer = csv.writer(f)
-
-                    # header first
-                    header = [Sheet.cell(row=1, column=c).value for c in range(1, MaxColumn + 1)]
-                    writer.writerow(header)
-
-                    # every data row
-                    for r in range(2, Sheet.max_row + 1):
-                        row = [Sheet.cell(row=r, column=c).value for c in range(1, MaxColumn + 1)]
-                        writer.writerow(row)
-
-                continue
-            
-            # Split sheet into multiple CSV tables based on dividers
-            for index, div_row in enumerate(DividerRows):
-                Start = div_row
-                End = DividerRows[index + 1] - 1 if index + 1 < len(DividerRows) else Sheet.max_row
-
-                divider_cell = [
-                    Sheet.cell(row=div_row, column=c).value
-                    for c in range(1, MaxColumn + 1)
-                    if Sheet.cell(row=div_row, column=c).value not in (None, "")
-                ]
-                TableName = divider_cell[0].strip() if divider_cell else f"table_{index+1}"
-                TableNameSafe = TableName.lower().replace(" ", "_")
-
-                # REMOVE divider row so it doesn't appear in CSV
-                Sheet.delete_rows(div_row, 1)
-
-                CsvPath = os.path.join(FolderPath, f"{TableNameSafe}.csv")
-                with open(CsvPath, "w", newline="", encoding="utf-8") as f:
-                    writer = csv.writer(f)
-                    header = [Sheet.cell(row=1, column=c).value for c in range(1, MaxColumn + 1)]
-                    writer.writerow(header)
-                    for r in range(Start, End + 1):
-                        row = [Sheet.cell(row=r, column=c).value for c in range(1, MaxColumn + 1)]
-                        writer.writerow(row)
-
-        # After CSV extraction, delete the temporary workbook
-        os.remove(Destination)
-        print(f"[FormatFile] Done: {Destination}\n")
+# NOTE: You need to update the run() method in your class to use 'output_dir' 
+# if you want the output to be safe too. See below for the small class tweak.
+pipeline.run()
